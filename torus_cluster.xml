@@ -1,0 +1,9 @@
+<?xml version='1.0'?>
+<!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid/simgrid.dtd">
+<platform version="4.1">
+<zone id="AS0" routing="Full">
+  <cluster id="jplc_cluster" prefix="jlpc" suffix=".sophia.fr"
+   radical="0-255" speed="1Gf" bw="125MBps" lat="50us" topology="TORUS" topo_parameters="4,4,4,4" 
+   loopback_bw="100000000" loopback_lat="0"/>
+</zone>
+</platform>
