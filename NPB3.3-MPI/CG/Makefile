@@ -1,19 +1,19 @@
 SHELL=/bin/sh
-BENCHMARK=ep
-BENCHMARKU=EP
+BENCHMARK=cg
+BENCHMARKU=CG
 
 include ../config/make.def
 
-OBJS = ep.o ${COMMON}/print_results.o ${COMMON}/${RAND}.o ${COMMON}/timers.o
+OBJS = cg.o ${COMMON}/print_results.o  \
+       ${COMMON}/${RAND}.o ${COMMON}/timers.o
 
 include ../sys/make.common
 
 ${PROGRAM}: config ${OBJS}
 	${FLINK} ${FLINKFLAGS} -o ${PROGRAM} ${OBJS} ${FMPI_LIB}
 
-
-ep.o:		ep.f  mpinpb.h npbparams.h
-	${FCOMPILE} ep.f
+cg.o:		cg.f  mpinpb.h npbparams.h timing.h
+	${FCOMPILE} cg.f
 
 clean:
 	- rm -f *.o *~ 

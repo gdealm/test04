@@ -76,8 +76,7 @@ void write_lu_info(FILE *fp, int nprocs, char class);
 void write_mg_info(FILE *fp, int nprocs, char class);
 void write_cg_info(FILE *fp, int nprocs, char class);
 void write_ft_info(FILE *fp, int nprocs, char class);
-//void write_ep_info(FILE *fp, int nprocs, char class);
-void write_ep_info_C(FILE *fp, int nprocs, char class);
+void write_ep_info(FILE *fp, int nprocs, char class);
 void write_is_info(FILE *fp, int nprocs, char class);
 void write_dt_info(FILE *fp, int nprocs, char class);
 void write_compiler_info(int type, FILE *fp);
@@ -346,7 +345,7 @@ void read_info(int type, int *nprocsp, char *classp, int *subtypep)
       case FT:
       case MG:
       case LU:
-      //case EP:
+      case EP:
       case CG:
           nread = fscanf(fp, DESC_LINE, nprocsp, classp);
           if (nread != 2) {
@@ -355,7 +354,6 @@ void read_info(int type, int *nprocsp, char *classp, int *subtypep)
           }
           break;
       case IS:
-      case EP:
       case DT:
           nread = fscanf(fp, DEF_CLASS_LINE, classp);
           nread += fscanf(fp, DEF_NUM_PROCS_LINE, nprocsp);
@@ -424,7 +422,7 @@ c  \n");
       case FT:
       case MG:
       case LU:
-      //case EP:
+      case EP:
       case CG:
           /* Write out the header */
           fprintf(fp, DESC_LINE, nprocs, class);
@@ -438,7 +436,6 @@ c  in this directory. Do not modify it by hand.\n\
 c  \n");
 
           break;
-      case EP:
       case IS:
       case DT:
           fprintf(fp, DEF_CLASS_LINE, class);
@@ -477,7 +474,7 @@ c  \n");
     write_ft_info(fp, nprocs, class);
     break;
   case EP:
-    write_ep_info_C(fp, nprocs, class);
+    write_ep_info(fp, nprocs, class);
     break;
   case CG:
     write_cg_info(fp, nprocs, class);
@@ -591,7 +588,7 @@ void write_lu_info(FILE *fp, int nprocs, char class)
 
   if      (class == 'S') { problem_size = 12;  dt_default = "0.5d0";  itmax = 50; }
   else if (class == 'W') { problem_size = 33;  dt_default = "1.5d-3"; itmax = 300; }
-  else if (class == 'A') { problem_size = 64;  dt_default = "2.0d0";  itmax = 50; }
+  else if (class == 'A') { problem_size = 64;  dt_default = "2.0d0";  itmax = 250; }
   else if (class == 'B') { problem_size = 102; dt_default = "2.0d0";  itmax = 250; }
   else if (class == 'C') { problem_size = 162; dt_default = "2.0d0";  itmax = 250; }
   else if (class == 'D') { problem_size = 408; dt_default = "1.0d0";  itmax = 300; }
@@ -847,31 +844,6 @@ void write_ep_info(FILE *fp, int nprocs, char class)
           FINDENT, m, nprocs);
 }
 
-void write_ep_info_C(FILE *fp, int nprocs, char class)
-{
-  /* easiest way (given the way the benchmark is written)
-   * is to specify log of number of grid points in each
-   * direction m1, m2, m3. nt is the number of iterations
-   */
-  int m;
-  if      (class == 'S') { m = 24; }
-  else if (class == 'W') { m = 25; }
-  else if (class == 'A') { m = 28; }
-  else if (class == 'B') { m = 30; }
-  else if (class == 'C') { m = 32; }
-  else if (class == 'D') { m = 36; }
-  else if (class == 'E') { m = 40; }
-  else {
-    printf("setparams: Internal error: invalid class type %c\n", class);
-    exit(1);
-  }
-  /* number of processors given by "npm" */
-
-
-  fprintf(fp, "%schar *_class=\"%c\";\n",FINDENT,class);
-  fprintf(fp, "%sint m=%d;\n", FINDENT,m);
-  fprintf(fp, "%sint npm=%d;\n", FINDENT,nprocs);
-}
 
 /* 
  * This is a gross hack to allow the benchmarks to 
@@ -961,7 +933,7 @@ setparams: File %s doesn't exist. To build the NAS benchmarks\n\
       case BT:
       case MG:
       case LU:
-      //case EP:
+      case EP:
       case CG:
           put_string(fp, "compiletime", compiletime);
           put_string(fp, "npbversion", VERSION);
@@ -973,7 +945,6 @@ setparams: File %s doesn't exist. To build the NAS benchmarks\n\
           put_string(fp, "cs6", flinkflags);
 	  put_string(fp, "cs7", randfile);
           break;
-      case EP:
       case IS:
       case DT:
           put_def_string(fp, "COMPILETIME", compiletime);
@@ -1240,7 +1211,7 @@ void write_convertdouble_info(int type, FILE *fp)
   case LU:
   case FT:
   case MG:
-  //case EP:
+  case EP:
   case CG:
     fprintf(fp, "%slogical  convertdouble\n", FINDENT);
 #ifdef CONVERTDOUBLE
