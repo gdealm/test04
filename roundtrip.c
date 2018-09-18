@@ -17,9 +17,8 @@ int main(int argc, char *argv[])
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Get_processor_name(hostname,&hostname_len);
 
-  // Allocate a 10MiB buffer
+  // Allocate a 1 MiB buffer
   char *buffer = malloc(sizeof(char) * N);
-
 
   // Communicate along the ring
   if (rank == 0) {
