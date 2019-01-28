@@ -7,5 +7,5 @@ platform files, and the source code of the `NAS Parallel Benchmarks
 <https://www.nas.nasa.gov/publications/npb.html>`_.
 
 Please refer to the `tutorial
-<https://simgrid.frama.io/simgrid/tuto_smpi.html>`_ for more
+<https://simgrid.frama.io/simgrid/Tutorial_MPI_Applications.html>`_ for more
 information.
