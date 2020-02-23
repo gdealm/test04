@@ -1,0 +1,67 @@
+# Test that the git version of this template compiles on the simgrid/unstable docker image 
+.build_git: &build_git
+  script:
+  - apt-get --allow-releaseinfo-change update
+  - apt-get install -y pajeng make gcc g++ gfortran vite r-base r-cran-devtools cmake flex bison
+  - smpicc -O3 roundtrip.c -o roundtrip && smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile ./roundtrip
+  - cd NPB3* && make lu NPROCS=4 CLASS=S && \
+    smpirun -np 4 -platform ../cluster_backbone.xml bin/lu.S.4 && \
+    smpirun -np 4 -platform ../cluster_backbone.xml -trace --cfg=tracing/filename:lu.S.4.trace bin/lu.S.4 && \
+    cd ..
+  - cd NPB3* && make lu NPROCS=32 CLASS=A && \
+    smpirun -trace-ti --cfg=tracing/filename:LU.A.32 -np 32 -platform ../cluster_backbone.xml bin/lu.A.32 && \
+    smpirun -np 32 -platform ../cluster_crossbar.xml -hostfile ../cluster_hostfile -replay LU.A.32 && \
+    cd ..
+  - smpicc -O3 gemm_mpi.cpp -o gemm && \
+    smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile --cfg=smpi/display-timing:yes --cfg=smpi/running-power:1000000000 ./gemm
+
+# TODO: we are not testing the Lab 3 and Lab 4, as they are requesting changes to the provided files.
+# TODO: we should factorize the upper script with the one at the bottom of this file.
+
+test-git-unstable:
+  image: simgrid/unstable
+  <<: *build_git
+
+test-git-v3.25:
+  image: simgrid/stable:v3.25
+  <<: *build_git
+
+test-git-v3.24:
+  image: simgrid/stable:v3.24
+  <<: *build_git
+
+test-git-v3.23.2:
+  image: simgrid/stable:v3.23.2
+  <<: *build_git
+
+test-git-v3.22:
+  image: simgrid/stable:v3.22.2
+  <<: *build_git
+
+test-git-v3.21:
+  image: simgrid/stable:v3_21
+  <<: *build_git
+
+test-git-v3.20:
+  image: simgrid/stable:v3.20
+  <<: *build_git
+
+# Test that the simgrid/tuto-s4u docker image is usable as advised in tuto
+test-image:
+  image: simgrid/tuto-smpi
+  script:
+  - mkdir /source/tutorial # create the pseudo-volume
+  - cp -r /source/simgrid-template-smpi.git/* /source/tutorial
+  - cd /source/tutorial
+  - smpicc -O3 roundtrip.c -o roundtrip && smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile ./roundtrip
+  - cd NPB3* && make lu NPROCS=4 CLASS=S && \
+    smpirun -np 4 -platform ../cluster_backbone.xml bin/lu.S.4 && \
+    smpirun -np 4 -platform ../cluster_backbone.xml -trace --cfg=tracing/filename:lu.S.4.trace bin/lu.S.4 && \
+    cd ..
+  - cd NPB3* && make lu NPROCS=32 CLASS=A && \
+    smpirun -trace-ti --cfg=tracing/filename:LU.A.32 -np 32 -platform ../cluster_backbone.xml bin/lu.A.32 && \
+    smpirun -np 32 -platform ../cluster_crossbar.xml -hostfile ../cluster_hostfile -replay LU.A.32 && \
+    cd ..
+  - smpicc -O3 gemm_mpi.cpp -o gemm && \
+    smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile --cfg=smpi/display-timing:yes --cfg=smpi/running-power:1000000000 ./gemm
+ 
