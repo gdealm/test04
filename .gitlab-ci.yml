@@ -12,7 +12,7 @@
     smpirun -trace-ti --cfg=tracing/filename:LU.A.32 -np 32 -platform ../cluster_backbone.xml bin/lu.A.32 &&
     smpirun -np 32 -platform ../cluster_crossbar.xml -hostfile ../cluster_hostfile -replay LU.A.32 &&
     cd ..
-  - smpicc -O3 gemm_mpi.cpp -o gemm &&
+  - smpicxx -O3 gemm_mpi.cpp -o gemm &&
     smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile --cfg=smpi/display-timing:yes --cfg=smpi/running-power:1000000000 ./gemm
 
 # TODO: we are not testing the Lab 3 and Lab 4, as they are requesting changes to the provided files.
@@ -62,5 +62,5 @@ test-image:
     smpirun -trace-ti --cfg=tracing/filename:LU.A.32 -np 32 -platform ../cluster_backbone.xml bin/lu.A.32 &&
     smpirun -np 32 -platform ../cluster_crossbar.xml -hostfile ../cluster_hostfile -replay LU.A.32 &&
     cd ..
-  - smpicc -O3 gemm_mpi.cpp -o gemm &&
+  - smpicxx -O3 gemm_mpi.cpp -o gemm &&
     smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile --cfg=smpi/display-timing:yes --cfg=smpi/running-power:1000000000 ./gemm
