@@ -2,7 +2,7 @@
 .build_git: &build_git
   script:
   - apt-get --allow-releaseinfo-change update
-  - apt-get install -y pajeng make gcc g++ gfortran vite r-base r-cran-devtools cmake flex bison
+  - apt-get install -y pajeng make gcc g++ gfortran vite r-base r-cran-devtools cmake flex bison python3
   - smpicc -O3 roundtrip.c -o roundtrip && smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile ./roundtrip
   - cd NPB3.3-MPI && make lu NPROCS=4 CLASS=S &&
     smpirun -np 4 -platform ../cluster_backbone.xml bin/lu.S.4 &&
