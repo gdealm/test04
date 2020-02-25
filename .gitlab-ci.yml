@@ -38,13 +38,7 @@ test-git-v3.22:
   image: simgrid/stable:v3.22.2
   <<: *build_git
 
-test-git-v3.21:
-  image: simgrid/stable:v3_21
-  <<: *build_git
-
-test-git-v3.20:
-  image: simgrid/stable:v3.20
-  <<: *build_git
+# The interface to -replay was different prior to v3.22
 
 # Test that the simgrid/tuto-s4u docker image is usable as advised in tuto
 test-image:
