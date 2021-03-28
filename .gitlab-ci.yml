@@ -13,7 +13,7 @@
     smpirun -np 32 -platform ../cluster_crossbar.xml -hostfile ../cluster_hostfile -replay LU.A.32 &&
     cd ..
   - smpicxx -O3 gemm_mpi.cpp -o gemm &&
-    smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile --cfg=smpi/display-timing:yes --cfg=smpi/running-power:1000000000 ./gemm
+    smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile --cfg=smpi/display-timing:yes --cfg=smpi/host-speed:1000000000 ./gemm
 
 # TODO: we are not testing the Lab 3 and Lab 4, as they are requesting changes to the provided files.
 # TODO: we should factorize the upper script with the one at the bottom of this file.
@@ -57,4 +57,4 @@ test-image:
     smpirun -np 32 -platform ../cluster_crossbar.xml -hostfile ../cluster_hostfile -replay LU.A.32 &&
     cd ..
   - smpicxx -O3 gemm_mpi.cpp -o gemm &&
-    smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile --cfg=smpi/display-timing:yes --cfg=smpi/running-power:1000000000 ./gemm
+    smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile --cfg=smpi/display-timing:yes --cfg=smpi/host-speed:1000000000 ./gemm
