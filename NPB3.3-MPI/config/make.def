@@ -46,7 +46,7 @@ FMPI_INC = -I/usr/local/include
 #---------------------------------------------------------------------------
 # Global *compile time* flags for Fortran programs
 #---------------------------------------------------------------------------
-FFLAGS	= -O
+FFLAGS	= -O -std=legacy
 
 #---------------------------------------------------------------------------
 # Global *link time* flags. Flags for increasing maximum executable 
