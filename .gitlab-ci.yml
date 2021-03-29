@@ -46,15 +46,13 @@ test-image:
   script:
   - mkdir /source/tutorial # create the pseudo-volume
   - cp -r /source/simgrid-template-smpi.git/* /source/tutorial
-  - cd /source/tutorial
-  - smpicc -O3 roundtrip.c -o roundtrip && smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile ./roundtrip
-  - cd NPB3.3-MPI && make lu NPROCS=4 CLASS=S &&
+  - cd /source/tutorial &&
+    smpicc -O3 roundtrip.c -o roundtrip && smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile ./roundtrip
+  - cd /source/tutorial/NPB3.3-MPI && make lu NPROCS=4 CLASS=S &&
     smpirun -np 4 -platform ../cluster_backbone.xml bin/lu.S.4 &&
-    smpirun -np 4 -platform ../cluster_backbone.xml -trace --cfg=tracing/filename:lu.S.4.trace bin/lu.S.4 &&
-    cd ..
-  - cd NPB3.3-MPI && make lu NPROCS=32 CLASS=A &&
+    smpirun -np 4 -platform ../cluster_backbone.xml -trace --cfg=tracing/filename:lu.S.4.trace bin/lu.S.4
+  - cd /source/tutorial/NPB3.3-MPI && make lu NPROCS=32 CLASS=A &&
     smpirun -trace-ti --cfg=tracing/filename:LU.A.32 -np 32 -platform ../cluster_backbone.xml bin/lu.A.32 &&
-    smpirun -np 32 -platform ../cluster_crossbar.xml -hostfile ../cluster_hostfile -replay LU.A.32 &&
-    cd ..
-  - smpicxx -O3 gemm_mpi.cpp -o gemm &&
+    smpirun -np 32 -platform ../cluster_crossbar.xml -hostfile ../cluster_hostfile -replay LU.A.32
+  - cd /source/tutorial && smpicxx -O3 gemm_mpi.cpp -o gemm &&
     smpirun -np 16 -platform cluster_crossbar.xml -hostfile cluster_hostfile --cfg=smpi/display-timing:yes --cfg=smpi/host-speed:1000000000 ./gemm
