@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
   char *buffer = malloc(sizeof(char) * N);
 
 #pragma omp parallel for num_threads(NT) // GGG
-for(int i=0; i<NT; i++) printf("thrd no %d\n",thrd_no()); // GGG
+for(int i=0; i<NT; i++) printf("thrd no %d of rank %d\n",thrd_no(),rank); // GGG
 	
   // Communicate along the ring
   if (rank == 0) {
