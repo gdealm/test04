@@ -2,7 +2,12 @@
 #include <stdlib.h>
 #include <mpi.h>
 
+#include <omp.h>
+
 #define N (1024 * 1024 * 1)
+
+#define NT 4
+#define thrd_no omp_get_thread_num
 
 int main(int argc, char *argv[])
 {
@@ -20,6 +25,9 @@ int main(int argc, char *argv[])
   // Allocate a 1 MiB buffer
   char *buffer = malloc(sizeof(char) * N);
 
+#pragma omp parallel for num_threads(NT) // GGG
+for(int i=0; i<NT; i++) printf("thrd no %d\n",thrd_no()); // GGG
+	
   // Communicate along the ring
   if (rank == 0) {
         gettimeofday(&start,NULL);
