@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 		//send buffer to MPI machines not activated yet
 		printf("send finish total: %d\n",(mpisize-1)-maxFracElems); // Segmentation fault. below
 		//#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
-		#pragma omp parallel for num_threads(7)
+		//#pragma omp parallel for num_threads(7)
 		for(int i=maxFracElems; i < mpisize-1; i++)
 		{	
 			printf("send finish %d\n",(i+1));
