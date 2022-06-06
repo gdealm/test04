@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 		#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
 		for(int i=maxFracElems; i < mpisize-1; i++)
 		{	
-			printf("send %d\n",(i+1));
+			//printf("send %d\n",(i+1));
 			MPI_Send(sendBuffer, 3, MPI_INT, i+1, i+1, MPI_COMM_WORLD);
 		}
 	}
