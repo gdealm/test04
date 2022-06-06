@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 			if(i >= maxFracElems)
 			{
 				int sendBuffer[3];  // buffer to send: current level, parent element x position and parent element y position
-				int posOrigin = (maxFracElems-1) + (i/2); // calculate index of the parent element
+				int posOrigin = i-1; // calculate index of the parent element
 				if(posOrigin < 0)
 				{
 					posOrigin = 0;
