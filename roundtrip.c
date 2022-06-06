@@ -16,6 +16,7 @@ int mypow(int base, int exp)
 	}
 	return result;
 }
+
 int main(int argc, char *argv[])
 {
   int mpisize; // number of MPI processing machines
@@ -28,6 +29,8 @@ int main(int argc, char *argv[])
   MPI_Comm_rank(MPI_COMM_WORLD, &mpirank); // obtain mpirank
   MPI_Comm_size(MPI_COMM_WORLD, &mpisize); // obtain mpisize //GGG if mpisize = 1, it will not work
 
+  printf("Rank %d is starting. \n",mpirank);	
+	
   // controller task
   if (mpirank == 0) {
 	int lastLevelElems = mypow(2,FRACLEVELS-1); // calculate the number of elements in the last level of the fractal
