@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 #include <mpi.h>
 #include <omp.h>
 
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
 				//MPI_Send(sendBuffer, 3, MPI_INT, (((mprank/2)%(mpisize-1))+1), ((mprank/2)+1), MPI_COMM_WORLD); 
 				MPI_Send(sendBuffer, 3, MPI_INT, ((mprank%(mpisize-1))+1), (mprank+1), MPI_COMM_WORLD); // send to next MPI machine in round robin
 			}
-			MPI_Recv(buffer, 2, MPI_INT, ((mprank%(mpisize-1))+1), (mprank+1)), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive calculated element position
+			MPI_Recv(buffer, 2, MPI_INT, ((mprank%(mpisize-1))+1), (mprank+1), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive calculated element position
 			fracElems[mpthreads - 1 + mprank][0] = buffer[0]; // update element x position in consolidated array
 			fracElems[mpthreads - 1 + mprank][1] = buffer[1]; // update element y position in consolidated array
 		}
@@ -60,7 +61,8 @@ int main(int argc, char *argv[])
 	//activate not activated yet, if any, to continue from receive to end
 	if(maxFracElems < mpisize-1)
 	{
-		int sendBuffer[0] = currFracLevel; // current fractal level is above to be treated already
+		int sendBuffer[3];  // buffer to send: current level
+		sendBuffer[0] = currFracLevel; // current fractal level is above to be treated already
 		//send buffer to MPI machines not activated yet
 		#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
 		for(int i=maxFracElems; i < mpisize-1; i++)
@@ -69,7 +71,8 @@ int main(int argc, char *argv[])
 		}
 	}
 	// print fractal elements positions;
-	for(int i = 0; i < fracElems.length; i++)
+	int fracElemsLength = sizeof fracElems / sizeof fracElems[0];
+	for(int i = 0; i < fracElemsLength; i++)
 	{
 		printf("(%d,%d)\n",fracElems[i][0],fracElems[i][1]);	
 	}
@@ -99,6 +102,7 @@ int main(int argc, char *argv[])
 			#pragma omp parallel for num_threads(mpthreads)
 			for(int i=0; i < mpthreads; i++)
 			{
+				int mprank = omp_get_thread_num(); // OpenMP rank of this thread
 				//check if new to receive or reuse from previous calculation in this while
 				if(mprank >= maxFracElems)
 				{
