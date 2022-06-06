@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
   }  else { // not MPI member 0, calculate element(s) to send to 0
 	int buffer[3]; // create a buffer to receive parent element position
 	printf("receive %d\n",mpirank);
-       	//MPI_Recv(buffer, 3, MPI_INT, 0, mpirank, MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive first message from MPI member 0
+       	MPI_Recv(buffer, 3, MPI_INT, 0, mpirank, MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive first message from MPI member 0
 	printf("received %d\n",mpirank);
 	currFracLevel = buffer[0]; // check in which level was first activated
 	/*
