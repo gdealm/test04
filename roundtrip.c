@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
   int mpisize; // number of MPI processing machines
   int mpirank; // MPI rank of this machine
 	
-  int maxFracElems; // max number of fractal elements processed so far in parallel
   int currFracLevel; // current fractal level being treated
+  int maxFracElems = 0; // max number of fractal elements processed so far in parallel
 
   MPI_Init(&argc, &argv); // initialize MPI
   MPI_Comm_rank(MPI_COMM_WORLD, &mpirank); // obtain mpirank
@@ -71,6 +71,8 @@ int main(int argc, char *argv[])
 		maxFracElems = mpthreads; // update max threads for next level control
 		currFracLevel++; // increment frac level to the next one
 	}
+	*/
+	currFracLevel = FRACLEVELS + 1; //GGG remove
 	//activate not activated yet, if any, to continue from receive to end
 	if(maxFracElems < mpisize-1)
 	{
@@ -80,7 +82,8 @@ int main(int argc, char *argv[])
 		#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
 		for(int i=maxFracElems; i < mpisize-1; i++)
 		{
-			MPI_Send(sendBuffer, 3, MPI_INT, i+1, i+1, MPI_COMM_WORLD);
+			printf("sent \n");	
+			//MPI_Send(sendBuffer, 3, MPI_INT, i+1, i+1, MPI_COMM_WORLD);
 		}
 	}
 	// print fractal elements positions;
@@ -89,7 +92,6 @@ int main(int argc, char *argv[])
 	{
 		printf("(%d,%d)\n",fracElems[i][0],fracElems[i][1]);	
 	}
-	*/
   } /* else { // not MPI member 0, calculate element(s) to send to 0
 	int buffer[3]; // create a buffer to receive parent element position
        	MPI_Recv(buffer, 3, MPI_INT, 0, mpirank, MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive first message from MPI member 0
