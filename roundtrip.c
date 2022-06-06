@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
   // controller task
   if (mpirank == 0) {
-	int lastLevelElems = pow(2,(FRACLEVELS-1)); // calculate the number of elements in the last level of the fractal
+	int lastLevelElems = pow(double(2),double(FRACLEVELS-1)); // calculate the number of elements in the last level of the fractal
 	int fracElems[lastLevelElems + lastLevelElems - 1][2]; // define array to contain (x,y) coordinates of all the fractal elements
 	int padval = 5; // value to calculate padding from the borders for the elements
 	
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	// starts calculating levels from level 2 to the last one defined
 	while(currFracLevel <= FRACLEVELS)
 	{
-		int mpthreads = pow(2,(currFracLevel-1)); // number of threads for the current level is the number of elements in the level / 2
+		int mpthreads = pow(double(2),double(currFracLevel-1)); // number of threads for the current level is the number of elements in the level / 2
 		#pragma omp parallel for num_threads(mpthreads)
 		for(int i=0; i < mpthreads; i++)
 		{
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 	{
 		bool first = true; // used to indicate if it is the first level being treated or not to treat the first element as a new receival further
 		int displacementX = ((FRACLEVELS-currFracLevel)+1)*2; // to add or subtract from parent x position to calculate the x position for this level elements
-		int fracLevelElems = pow(2,(FRACLEVELS-1)); // calculate the number of elements in the last level of the fractal
+		int fracLevelElems = pow(double(2),double(FRACLEVELS-1)); // calculate the number of elements in the last level of the fractal
 		int lastLevelLocalElems = (fracLevelElems/(mpisize-1))+1; // calculate +- the number of elements in the last level of the fractal this MPI will treat
 		int localFracElems[lastLevelLocalElems][2];
 		localFracElems[0][0] = buffer[1];
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 		maxFracElems = 1;
 		while(currFracLevel <= FRACLEVELS)
 		{
-			fracLevelElems = pow(2,(currFracLevel-1)); // calculate the number of elements in the current level of the fractal
+			fracLevelElems = pow(double(2),double(currFracLevel-1)); // calculate the number of elements in the current level of the fractal
 			int mpthreads = (fracLevelElems/(mpisize-1)); // contains the number of elements in the current level of the fractal this MPI will treat
 			if(mpirank < (fracLevelElems%(mpisize-1))+1) // may need to add one more if this MPI is treatment some of the remainder
 			{	
