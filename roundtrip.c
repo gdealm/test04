@@ -115,7 +115,6 @@ int main(int argc, char *argv[])
 	if(currFracLevel <= FRACLEVELS) // will do something if still in some level to process
 	{
 		bool first = true; // used to indicate if it is the first level being treated or not to treat the first element as a new receival further
-		int displacementX = ((FRACLEVELS-currFracLevel)+1)*2; // to add or subtract from parent x position to calculate the x position for this level elements
 		int fracLevelElems = mypow(2,FRACLEVELS-1); // calculate the number of elements in the last level of the fractal
 		int lastLevelLocalElems = (fracLevelElems/(mpisize-1))+1; // calculate +- the number of elements in the last level of the fractal this MPI will treat
 		int localFracElems[lastLevelLocalElems][2];
@@ -124,6 +123,7 @@ int main(int argc, char *argv[])
 		maxFracElems = 1;
 		while(currFracLevel <= FRACLEVELS)
 		{
+			int displacementX = ((FRACLEVELS-currFracLevel)+1)*2; // to add or subtract from parent x position to calculate the x position for this level elements
 			fracLevelElems = mypow(2,currFracLevel-1); // calculate the number of elements in the current level of the fractal
 			int mpthreads = (fracLevelElems/(mpisize-1)); // contains the number of elements in the current level of the fractal this MPI will treat
 			if(mpirank < (fracLevelElems%(mpisize-1))+1) // may need to add one more if this MPI is treatment some of the remainder
