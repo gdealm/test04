@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
 			//if mprank is higher than last level processed, a new "virtual" MPI machine will start processing some branch
 			if(mprank >= maxFracElems)
 			{
+				printf("send %d(%d)\n",(mprank+1),((mprank%(mpisize-1))+1));
 				int sendBuffer[3];  // buffer to send: current level, parent element x position and parent element y position
 				int posOrigin = ((mpthreads/2)-1) + (mprank/2); // calculate index of the parent element
 				sendBuffer[0] = currFracLevel; // set current level 
@@ -84,7 +85,8 @@ int main(int argc, char *argv[])
 		//#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
 		for(int i=maxFracElems; i < mpisize-1; i++)
 		{	
-			/*printf("send %d\n",(i+1));
+			printf("send finish %d\n",(i+1));
+			/*
 			int sendBuffer[3];  // buffer to send: current level
 			sendBuffer[0] = currFracLevel; // current fractal level is above to be treated already
 			sendBuffer[1] = 0; // just to initialize
@@ -126,6 +128,7 @@ int main(int argc, char *argv[])
 			{	
 				mpthreads++;
 			}
+			printf("Rank %d is starting %d threads. \n",mpirank,mpthreads);
 			//create threads
 			//#pragma omp parallel for num_threads(mpthreads)
 			for(int i=0; i < mpthreads; i++)
