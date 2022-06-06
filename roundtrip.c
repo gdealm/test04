@@ -5,7 +5,7 @@
 #include <mpi.h>
 #include <omp.h>
 
-#define FRACLEVELS 2 // Define here the number of levels the fractal tree will have
+#define FRACLEVELS 3 // Define here the number of levels the fractal tree will have
 
 int mypow(int base, int exp)
 {
@@ -39,8 +39,8 @@ int main(int argc, char *argv[])
 	int padval = 5; // value to calculate padding from the borders for the elements
 	
 	currFracLevel = 1; // just to indicate it will be calculating the level 1 single element positions
-	fracElems[0][0] = 0; // x position
-	fracElems[0][1] = lastLevelElems-1; // y position
+	fracElems[0][0] = (lastLevelElems-1)*2; // x position
+	fracElems[0][1] = 0; // y position
 	
 	currFracLevel = 2; // indicates current processing level 2 to start the loop
 	
