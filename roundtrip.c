@@ -56,9 +56,9 @@ int main(int argc, char *argv[])
 			//if mprank is higher than last level processed, a new "virtual" MPI machine will start processing some branch
 			if(i >= maxFracElems)
 			{
-				printf("send %d(%d)\n",(i+1),((i%(mpisize-1))+1));
 				int sendBuffer[3];  // buffer to send: current level, parent element x position and parent element y position
 				int posOrigin = ((mpthreads/2)-1) + (i/2); // calculate index of the parent element
+				printf("send %d(%d): %d\n",(i+1),((i%(mpisize-1))+1),posOrigin);
 				sendBuffer[0] = currFracLevel; // set current level 
 				sendBuffer[1] = fracElems[posOrigin][0]; // set parent element x position
 				sendBuffer[2] = fracElems[posOrigin][1]; // set parent element y position
