@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
   MPI_Comm_rank(MPI_COMM_WORLD, &mpirank); // obtain mpirank
   MPI_Comm_size(MPI_COMM_WORLD, &mpisize); // obtain mpisize //GGG if mpisize = 1, it will not work
 
-  printf("Rank %d is starting. \n",mpirank);	
+  printf("Rank %d of %d is starting. \n",mpirank,mpisize);	
 	
   // controller task
 
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 			sendBuffer[0] = currFracLevel; // current fractal level is above to be treated already
 			sendBuffer[1] = 0; // just to initialize
 			sendBuffer[2] = 0; // just to initialize
-			//MPI_Send(sendBuffer, 3, MPI_INT, i+1, i+1, MPI_COMM_WORLD);
+			MPI_Send(sendBuffer, 3, MPI_INT, i+1, i+1, MPI_COMM_WORLD);
 		}
 		printf("all sent\n");	
 	}
