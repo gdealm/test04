@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 	
 	currFracLevel = 1; // just to indicate it will be calculating the level 1 single element positions
 	fracElems[0][0] = (lastLevelElems-1)*2; // x position
-	fracElems[0][1] = 0; // y position
+	fracElems[0][1] = 1; // y position
 	
 	currFracLevel = 2; // indicates current processing level 2 to start the loop
 	
@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
 					int buffer[3]; // create a buffer to receive parent x,y positions
 					MPI_Recv(buffer, 3, MPI_INT, 0, mpirank+(i*mpisize), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive parent x,y positions
 					localFracElems[i][0] = buffer[1] + displacementX;
-					localFracElems[i][1] = buffer[2] + currFracLevel;
+					localFracElems[i][1] = buffer[2] + 1;
 					MPI_Send(localFracElems[i], 2, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD);
 				}
 				else if (first)
@@ -151,13 +151,13 @@ int main(int argc, char *argv[])
 					if(mpirank == 1)
 					{
 						localFracElems[i][0] = buffer[1] - displacementX;
-						localFracElems[i][1] = buffer[2] + currFracLevel;
+						localFracElems[i][1] = buffer[2] + 1;
 						MPI_Send(localFracElems[i], 2, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD);
 					}
 					else
 					{
 						localFracElems[i][0] = buffer[1] + displacementX;
-						localFracElems[i][1] = buffer[2] + currFracLevel;
+						localFracElems[i][1] = buffer[2] + 1;
 						MPI_Send(localFracElems[i], 2, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD);
 					}
 					first = false;
@@ -165,9 +165,10 @@ int main(int argc, char *argv[])
 				else
 				{
 					localFracElems[i][0] = buffer[1] - displacementX;
-					localFracElems[i][1] = buffer[2] + currFracLevel;
+					localFracElems[i][1] = buffer[2] + 1;
 					MPI_Send(localFracElems[i], 2, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD);
 				}
+				printf("%d sent (%d,%d)\n"), mpirank+(i*(mpisize-1)), localFracElems[i][0],localFracElems[i][1]);
 			}
 			maxFracElems = mpthreads; // update max threads for next level control
 			currFracLevel++;
