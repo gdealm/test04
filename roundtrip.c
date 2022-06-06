@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 		sendBuffer[2] = 0; // just to initialize
 		*/
 		//send buffer to MPI machines not activated yet
-		#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
+		//#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
 		for(int i=maxFracElems; i < mpisize-1; i++)
 		{	
 			printf("send %d\n",(i+1));
