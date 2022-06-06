@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
 					localFracElems[i][1] = buffer[2] + 1;
 					MPI_Send(localFracElems[i], 2, MPI_INT, 0, mpirank+(i*(mpisize-1)), MPI_COMM_WORLD);
 				}
-				printf("%d sent (%d,%d)\n"), mpirank+(i*(mpisize-1)), localFracElems[i][0],localFracElems[i][1]);
+				printf("%d sent (%d,%d)\n", mpirank+(i*(mpisize-1)), localFracElems[i][0],localFracElems[i][1]);
 			}
 			maxFracElems = mpthreads; // update max threads for next level control
 			currFracLevel++;
