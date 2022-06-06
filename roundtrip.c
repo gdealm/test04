@@ -57,7 +57,11 @@ int main(int argc, char *argv[])
 			if(i >= maxFracElems)
 			{
 				int sendBuffer[3];  // buffer to send: current level, parent element x position and parent element y position
-				int posOrigin = ((mpthreads/2)-1) + (i/2); // calculate index of the parent element
+				int posOrigin = (maxFracElems-1) + (i/2); // calculate index of the parent element
+				if(posOrigin < 0)
+				{
+					posOrigin = 0;
+				}
 				printf("send %d(%d): %d\n",(i+1),((i%(mpisize-1))+1),posOrigin);
 				sendBuffer[0] = currFracLevel; // set current level 
 				sendBuffer[1] = fracElems[posOrigin][0]; // set parent element x position
