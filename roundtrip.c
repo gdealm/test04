@@ -68,13 +68,19 @@ int main(int argc, char *argv[])
 			MPI_Send(sendBuffer, 3, MPI_INT, i+1, i+1, MPI_COMM_WORLD);
 		}
 	}
-	//GGG print fracElems;
+	// print fractal elements positions;
+	for(int i = 0; i < fracElems.length; i++)
+	{
+		printf("(%d,%d)\n",fracElems[i][0],fracElems[i][1]);	
+	}
   } else { // not MPI member 0, calculate element(s) to send to 0
 	int buffer[3]; // create a buffer to receive parent element position
        	MPI_Recv(buffer, 3, MPI_INT, 0, mpirank, MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive first message from MPI member 0
 	currFracLevel = buffer[0]; // check in which level was first activated
 	if(currFracLevel <= FRACLEVELS) // will do something if still in some level to process
 	{
+		bool first = true; // used to indicate if it is the first level being treated or not to treat the first element as a new receival further
+		int displacementX = ((FRACLEVELS-currFracLevel)+1)*2; // to add or subtract from parent x position to calculate the x position for this level elements
 		int fracLevelElems = pow(2,(FRACLEVELS-1)); // calculate the number of elements in the last level of the fractal
 		int lastLevelLocalElems = (fracLevelElems/(mpisize-1))+1; // calculate +- the number of elements in the last level of the fractal this MPI will treat
 		int localFracElems[lastLevelLocalElems][2];
@@ -85,7 +91,7 @@ int main(int argc, char *argv[])
 		{
 			fracLevelElems = pow(2,(currFracLevel-1)); // calculate the number of elements in the current level of the fractal
 			int mpthreads = (fracLevelElems/(mpisize-1)); // contains the number of elements in the current level of the fractal this MPI will treat
-			if(mpirank <= (fracLevelElems%(mpisize-1))+1) // 8/3 = 2 e resto 2 (0, 1 e 2) rank 1 2 e 3 ggg
+			if(mpirank < (fracLevelElems%(mpisize-1))+1) // may need to add one more if this MPI is treatment some of the remainder
 			{	
 				mpthreads++;
 			}
@@ -96,16 +102,42 @@ int main(int argc, char *argv[])
 				//check if new to receive or reuse from previous calculation in this while
 				if(mprank >= maxFracElems)
 				{
+					int buffer[3]; // create a buffer to receive parent x,y positions
+					MPI_Recv(buffer, 3, MPI_INT, 0, mprank+(i*mpisize), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive parent x,y positions
+					localFracElems[i][0] = buffer[1] + displacementX;
+					localFracElems[i][1] = buffer[2] + currFracLevel;
+					MPI_Send(localFracElems[i], 2, MPI_INT, 0, mprank+(i*mpisize), MPI_COMM_WORLD);
 				}
-				//calculate/proccess
-				//send result
+				else if (first)
+				{
+					if(mpirank == 1)
+					{
+						localFracElems[i][0] = buffer[1] - displacementX;
+						localFracElems[i][1] = buffer[2] + currFracLevel;
+						MPI_Send(localFracElems[i], 2, MPI_INT, 0, mprank+(i*mpisize), MPI_COMM_WORLD);
+					}
+					else
+					{
+						localFracElems[i][0] = buffer[1] + displacementX;
+						localFracElems[i][1] = buffer[2] + currFracLevel;
+						MPI_Send(localFracElems[i], 2, MPI_INT, 0, mprank+(i*mpisize), MPI_COMM_WORLD);
+					}
+					first = false;
+				}
+				else
+				{
+					localFracElems[i][0] = buffer[1] - displacementX;
+					localFracElems[i][1] = buffer[2] + currFracLevel;
+					MPI_Send(localFracElems[i], 2, MPI_INT, 0, mprank+(i*mpisize), MPI_COMM_WORLD);
+				}
 			}
 			maxFracElems = mpthreads; // update max threads for next level control
 			currFracLevel++;
 		}
 	}
   }
-
+  
+  printf("Rank %d is ending. \n",mpirank);	
   MPI_Finalize();
   return 0;
 }
