@@ -65,7 +65,9 @@ int main(int argc, char *argv[])
 				//MPI_Send(sendBuffer, 3, MPI_INT, (((mprank/2)%(mpisize-1))+1), ((mprank/2)+1), MPI_COMM_WORLD); 
 				MPI_Send(sendBuffer, 3, MPI_INT, ((mprank%(mpisize-1))+1), (mprank+1), MPI_COMM_WORLD); // send to next MPI machine in round robin
 			}
+			printf("to receive %d - %d\n", ((mprank%(mpisize-1))+1), (mprank+1));
 			MPI_Recv(buffer, 2, MPI_INT, ((mprank%(mpisize-1))+1), (mprank+1), MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive calculated element position
+			printf("received %d - %d\n", ((mprank%(mpisize-1))+1), (mprank+1));
 			fracElems[mpthreads - 1 + mprank][0] = buffer[0]; // update element x position in consolidated array
 			fracElems[mpthreads - 1 + mprank][1] = buffer[1]; // update element y position in consolidated array
 		}
@@ -134,6 +136,7 @@ int main(int argc, char *argv[])
 			for(int i=0; i < mpthreads; i++)
 			{
 				int mprank = omp_get_thread_num(); // OpenMP rank of this thread
+				printf("to send 0 - %d\n", mprank+(i*mpisize));
 				//check if new to receive or reuse from previous calculation in this while
 				if(mprank >= maxFracElems)
 				{
