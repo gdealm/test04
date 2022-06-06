@@ -86,12 +86,12 @@ int main(int argc, char *argv[])
 		#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
 		for(int i=maxFracElems; i < mpisize-1; i++)
 		{	
-			//printf("send %d\n",(i+1));
+			printf("send %d\n",(i+1));
 			int sendBuffer[3];  // buffer to send: current level
 			sendBuffer[0] = currFracLevel; // current fractal level is above to be treated already
 			sendBuffer[1] = 0; // just to initialize
 			sendBuffer[2] = 0; // just to initialize
-			MPI_Send(sendBuffer, 3, MPI_INT, i+1, i+1, MPI_COMM_WORLD);
+			//MPI_Send(sendBuffer, 3, MPI_INT, i+1, i+1, MPI_COMM_WORLD);
 		}
 		printf("all sent\n");	
 	}
