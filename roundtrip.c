@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
   printf("Rank %d is starting. \n",mpirank);	
 	
   // controller task
-/*
+
   if (mpirank == 0) {
 	int lastLevelElems = mypow(2,FRACLEVELS-1); // calculate the number of elements in the last level of the fractal
 	int fracElems[lastLevelElems + lastLevelElems - 1][2]; // define array to contain (x,y) coordinates of all the fractal elements
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 	fracElems[0][1] = lastLevelElems-1; // y position
 	
 	currFracLevel = 2; // indicates current processing level 2 to start the loop
-	 
+	/*
 	// starts calculating levels from level 2 to the last one defined
 	while(currFracLevel <= FRACLEVELS)
 	{
@@ -89,7 +89,8 @@ int main(int argc, char *argv[])
 	{
 		printf("(%d,%d)\n",fracElems[i][0],fracElems[i][1]);	
 	}
-  } else { // not MPI member 0, calculate element(s) to send to 0
+	*/
+  } /* else { // not MPI member 0, calculate element(s) to send to 0
 	int buffer[3]; // create a buffer to receive parent element position
        	MPI_Recv(buffer, 3, MPI_INT, 0, mpirank, MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive first message from MPI member 0
 	currFracLevel = buffer[0]; // check in which level was first activated
