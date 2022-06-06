@@ -43,12 +43,12 @@ int main(int argc, char *argv[])
 	fracElems[0][1] = lastLevelElems-1; // y position
 	
 	currFracLevel = 2; // indicates current processing level 2 to start the loop
-	/*
+	
 	// starts calculating levels from level 2 to the last one defined
 	while(currFracLevel <= FRACLEVELS)
 	{
 		int mpthreads = mypow(2,currFracLevel-1); // number of threads for the current level is the number of elements in the level / 2
-		#pragma omp parallel for num_threads(mpthreads)
+		//#pragma omp parallel for num_threads(mpthreads)
 		for(int i=0; i < mpthreads; i++)
 		{
 			int buffer[2]; // create a buffer to receive calculated position
@@ -71,8 +71,6 @@ int main(int argc, char *argv[])
 		maxFracElems = mpthreads; // update max threads for next level control
 		currFracLevel++; // increment frac level to the next one
 	}
-	*/
-	//currFracLevel = FRACLEVELS + 1; //GGG remove
 	//activate not activated yet, if any, to continue from receive to end
 	if(maxFracElems < mpisize-1)
 	{
@@ -83,7 +81,7 @@ int main(int argc, char *argv[])
 		sendBuffer[2] = 0; // just to initialize
 		
 		//send buffer to MPI machines not activated yet
-		#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
+		//#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
 		for(int i=maxFracElems; i < mpisize-1; i++)
 		{	
 			/*printf("send %d\n",(i+1));
@@ -92,7 +90,7 @@ int main(int argc, char *argv[])
 			sendBuffer[1] = 0; // just to initialize
 			sendBuffer[2] = 0; // just to initialize
 			*/
-			#pragma omp critical
+			//#pragma omp critical
 			MPI_Send(sendBuffer, 3, MPI_INT, i+1, i+1, MPI_COMM_WORLD);
 		}
 		printf("all sent\n");	
@@ -109,7 +107,7 @@ int main(int argc, char *argv[])
        	MPI_Recv(buffer, 3, MPI_INT, 0, mpirank, MPI_COMM_WORLD, MPI_STATUS_IGNORE); // receive first message from MPI member 0
 	printf("received %d\n",mpirank);
 	currFracLevel = buffer[0]; // check in which level was first activated
-	/*
+	
 	if(currFracLevel <= FRACLEVELS) // will do something if still in some level to process
 	{
 		bool first = true; // used to indicate if it is the first level being treated or not to treat the first element as a new receival further
@@ -129,7 +127,7 @@ int main(int argc, char *argv[])
 				mpthreads++;
 			}
 			//create threads
-			#pragma omp parallel for num_threads(mpthreads)
+			//#pragma omp parallel for num_threads(mpthreads)
 			for(int i=0; i < mpthreads; i++)
 			{
 				int mprank = omp_get_thread_num(); // OpenMP rank of this thread
@@ -169,7 +167,7 @@ int main(int argc, char *argv[])
 			currFracLevel++;
 		}
 	}
-  	*/
+  	
   }
   printf("Rank %d is ending. \n",mpirank);	
   MPI_Finalize();
