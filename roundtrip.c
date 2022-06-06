@@ -5,7 +5,7 @@
 #include <mpi.h>
 #include <omp.h>
 
-#define FRACLEVELS 5 // Define here the number of levels the fractal tree will have
+#define FRACLEVELS 4 // Define here the number of levels the fractal tree will have
 
 int mypow(int base, int exp)
 {
@@ -88,7 +88,8 @@ int main(int argc, char *argv[])
 		sendBuffer[2] = 0; // just to initialize
 		
 		//send buffer to MPI machines not activated yet
-		//#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
+		printf("send finish total: %d\n",(mpisize-1)-maxFracElems);
+		#pragma omp parallel for num_threads((mpisize-1)-maxFracElems)
 		for(int i=maxFracElems; i < mpisize-1; i++)
 		{	
 			printf("send finish %d\n",(i+1));
