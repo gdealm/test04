@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
   printf("Rank %d is starting. \n",mpirank);	
 	
   // controller task
+/*
   if (mpirank == 0) {
 	int lastLevelElems = mypow(2,FRACLEVELS-1); // calculate the number of elements in the last level of the fractal
 	int fracElems[lastLevelElems + lastLevelElems - 1][2]; // define array to contain (x,y) coordinates of all the fractal elements
@@ -152,7 +153,7 @@ int main(int argc, char *argv[])
 		}
 	}
   }
-  
+  */
   printf("Rank %d is ending. \n",mpirank);	
   MPI_Finalize();
   return 0;
